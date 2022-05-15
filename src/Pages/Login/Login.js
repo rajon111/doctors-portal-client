@@ -4,6 +4,7 @@ import auth from '../../firebase.init';
 import { useForm } from "react-hook-form";
 import Loading from '../Shared/Loading/Loading';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import useToken from '../../hooks/useToken'
 
 const Login = () => {
     const [signInWithGoogle, guser, gloading, gerror] = useSignInWithGoogle(auth);
@@ -14,6 +15,8 @@ const Login = () => {
         error,
     ] = useSignInWithEmailAndPassword(auth);
 
+    const [token] = useToken(user || guser)
+
     let signInError;
     const navigate = useNavigate()
     const location = useLocation()
@@ -22,17 +25,19 @@ const Login = () => {
 
     const { register, formState: { errors }, handleSubmit } = useForm();
 
+    useEffect(()=>{
+        if(token){
+            navigate(from, {replace: true})
+        }
+    },[token,from,navigate])   
+    
+    if(gloading || loading){
+        return <Loading></Loading>
+    }
+    
     if (gerror || error) {
         signInError = <p className='text-red-500'> <small>{gerror?.message || error?.message}</small></p>
     }
-
-    useEffect(()=>{
-        if(user || guser){
-            navigate(from, {replace: true})
-        }
-    },[user,guser,from,navigate])    
-    
-    
 
     const onSubmit = data => {
         console.log(data)
