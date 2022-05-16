@@ -14,7 +14,7 @@ const MyAppointment = () => {
         fetch(`http://localhost:5000/booking?patient=${ user.email }`,{
             method:'GET',
             headers:{
-                'authorization' : `bearer ${localStorage.getItem('accessToken')}`
+                'authorization' : `Bearer ${localStorage.getItem('accessToken')}`
             }
         })
             .then(res =>{ 
@@ -29,7 +29,7 @@ const MyAppointment = () => {
                 // console.log(data)
                 setAppointments(data)
             })
-    }, [user])
+    }, [user,navigate])
     return (
         <div>
             <h2>My appointment: {appoientments.length}</h2>
